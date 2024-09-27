@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    
+    <div id="gameBoard" class="gameBoard">
+        <div id="winner">
+            <h1 class="showWinner"></h1>
+        </div>
+    <div class="grid">
+        <div class="cell" id="cell-0"></div>
+        <div class="cell" id="cell-1"></div>
+        <div class="cell" id="cell-2"></div>
+        <div class="cell" id="cell-3"></div>
+        <div class="cell" id="cell-4"></div>
+        <div class="cell" id="cell-5"></div>
+        <div class="cell" id="cell-6"></div>
+        <div class="cell" id="cell-7"></div>
+        <div class="cell" id="cell-8"></div>
+    </div>
+    <button id="restart">Restart</button>
+    </div>
+
+    <script>
+        const cells = document.querySelectorAll('.cell');
+        const restartButton = document.getElementById('restart');
+        let currentPlayer = 'X';
+        let click = 0;
+        let gameOver = false;
+
+        cells.forEach(cell => {
+            cell.addEventListener('click', () => {
+                if (gameOver) return;
+                if (cell.innerHTML === '') {
+                    cell.innerHTML = currentPlayer;
+                    click++;
+                    if (checkWinner()) {
+                        console.log(`Player ${currentPlayer} wins!`);
+                        document.querySelector('.grid').classList.add('unclickable');
+                        document.querySelector('.showWinner').innerHTML = `Player ${currentPlayer} wins!`;
+                        gameOver = true;
+                    } else if (click === 9) {
+                        console.log("It's a tie");
+                        document.querySelector('.grid').classList.add('unclickable');
+                        document.querySelector('.showWinner').innerHTML = `It's a tie!`;
+                        gameOver = true;
+                    } else {
+                        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                    }
+                }
+            });
+        });
+
+        const checkWinner = () => {
+            const winPatterns = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+            for (const pattern of winPatterns) {
+                let position1 = cells[pattern[0]].innerHTML;
+                let position2 = cells[pattern[1]].innerHTML;
+                let position3 = cells[pattern[2]].innerHTML;
+
+                if (position1 !== "" && position2 !== "" && position3 !== "") {
+                    if (position1 === position2 && position2 === position3) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+
+        restartButton.addEventListener('click', () => {
+            cells.forEach(cell => {
+                cell.innerHTML = '';
+            });
+            currentPlayer = 'X';
+            click = 0;
+            gameOver = false;
+            document.querySelector('.grid').classList.remove('unclickable');
+            document.querySelector('.showWinner').innerHTML = '';
+            console.log('Game restarted');
+        });
+    </script>
+</body>
+</html>
